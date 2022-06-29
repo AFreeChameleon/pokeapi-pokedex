@@ -45,7 +45,7 @@ function App() {
           <div className="result" key={i}>
             <div className="result-inner">
               <div className="result-image-container">
-                <img className="result-image" src={result.sprites.front_default} />
+                <img className="result-image" src={result.sprites.front_default} alt={result.name} />
               </div>
               <div className="result-content">
                 <div className="result-title">
