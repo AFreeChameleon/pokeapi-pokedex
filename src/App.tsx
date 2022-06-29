@@ -5,8 +5,8 @@ type Stat = {
   base_stat: number;
   stat: {
     name: string;
-  }
-}
+  };
+};
 
 type Result = {
   name: string;
@@ -25,12 +25,12 @@ type Result = {
       name: string;
     }
   }[];
-}
+};
 
 type SpeciesResult = {
   id: number;
-  genera: { language: { name: string; }; genus: string; }[]
-}
+  genera: { language: { name: string; }; genus: string; }[];
+};
 
 const footConversion = 0.3280839895;
 const poundConversion = 0.220462;
