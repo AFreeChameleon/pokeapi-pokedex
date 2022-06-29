@@ -1,20 +1,56 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
+
+type Stat = {
+  base_stat: number;
+  stat: {
+    name: string;
+  }
+}
+
+type Result = {
+  name: string;
+  id: number;
+  height: number;
+  weight: number;
+  sprites: {
+    front_default: string;
+  };
+  species: {
+    genus?: string;
+  }
+  stats: Stat[];
+  types: {
+    type: {
+      name: string;
+    }
+  }[];
+}
+
+type SpeciesResult = {
+  id: number;
+  genera: { language: { name: string; }; genus: string; }[]
+}
 
 const footConversion = 0.3280839895;
 const poundConversion = 0.220462;
 
-function capitalizeFirstLetter(string) {
+function capitalizeFirstLetter(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+function getStat(stats: Stat[], key: string) {
+  const stat = stats.find((s) => s.stat.name === key);
+  return stat ? stat.base_stat : 'N/A';
+}
+
 function App() {
-  const [results, setResults] = useState([]);
-  const [viewExtraDetailsId, setViewExtraDetailsId] = useState(-1);
+  const [results, setResults] = useState<Result[]>([]);
+  const [viewExtraDetailsId, setViewExtraDetailsId] = useState<Number>(-1);
 
   useEffect(() => {
-    const promises = [];
-    const speciesPromises = [];
+    const promises: Promise<Result>[] = [];
+    const speciesPromises: Promise<SpeciesResult>[] = [];
     for (let i = 1; i <= 18; i++) {
       const url = `https://pokeapi.co/api/v2/pokemon/${i}`;
       const speciesUrl = `https://pokeapi.co/api/v2/pokemon-species/${i}/`;
@@ -25,8 +61,11 @@ function App() {
       Promise.all(speciesPromises).then((speciesResults) => {
         for (const result of pokemonResults) {
           const res = speciesResults.find((sr) => sr.id === result.id);
-          const genus = res.genera.find((g) => g.language.name === 'en').genus;
-          result.species.genus = genus;
+          if (!res) {
+            continue;
+          }
+          const genera = res.genera.find((g) => g.language.name === 'en');
+          result.species.genus = !genera ? 'Default Pokémon' : genera.genus;
         }
         console.log(pokemonResults)
         setResults(pokemonResults);
@@ -92,29 +131,29 @@ function App() {
                 <div className="extra-details-column">
                   <div className="extra-details-row">
                     <div className="extra-details-column extra-details-header">HP</div>
-                    <div className="extra-details-column extra-details-value">{result.stats.find((s) => s.stat.name === 'hp').base_stat}</div>
+                    <div className="extra-details-column extra-details-value">{getStat(result.stats, 'hp')}</div>
                   </div>
                   <div className="extra-details-row">
                     <div className="extra-details-column extra-details-header">Attack</div>
-                    <div className="extra-details-column extra-details-value">{result.stats.find((s) => s.stat.name === 'attack').base_stat}</div>
+                    <div className="extra-details-column extra-details-value">{getStat(result.stats, 'attack')}</div>
                   </div>
                   <div className="extra-details-row">
                     <div className="extra-details-column extra-details-header">Defense</div>
-                    <div className="extra-details-column extra-details-value">{result.stats.find((s) => s.stat.name === 'defense').base_stat}</div>
+                    <div className="extra-details-column extra-details-value">{getStat(result.stats, 'defense')}</div>
                   </div>
                 </div>
                 <div className="extra-details-column">
                   <div className="extra-details-row">
                     <div className="extra-details-column extra-details-header">Speed</div>
-                    <div className="extra-details-column extra-details-value">{result.stats.find((s) => s.stat.name === 'speed').base_stat}</div>
+                    <div className="extra-details-column extra-details-value">{getStat(result.stats, 'speed')}</div>
                   </div>
                   <div className="extra-details-row">
                     <div className="extra-details-column extra-details-header">Sp. Attack</div>
-                    <div className="extra-details-column extra-details-value">{result.stats.find((s) => s.stat.name === 'special-attack').base_stat}</div>
+                    <div className="extra-details-column extra-details-value">{getStat(result.stats, 'special-attack')}</div>
                   </div>
                   <div className="extra-details-row">
                     <div className="extra-details-column extra-details-header">Sp. Defense</div>
-                    <div className="extra-details-column extra-details-value">{result.stats.find((s) => s.stat.name === 'special-defense').base_stat}</div>
+                    <div className="extra-details-column extra-details-value">{getStat(result.stats, 'special-defense')}</div>
                   </div>
                 </div>
               </div>
