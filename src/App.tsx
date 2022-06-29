@@ -80,7 +80,7 @@ function App() {
       </div>
 
       <div className="results-grid">
-        {results.length && results.map((result, i) => (
+        {results.length ? results.map((result, i) => (
           <div className="result" key={i}>
             <div className="result-inner">
               <div className="result-image-container">
@@ -162,7 +162,7 @@ function App() {
               See {viewExtraDetailsId === result.id ? 'Less' : 'More'}
             </div>
           </div>
-        ))}
+        )) : null}
       </div>
     </div>
   );
