@@ -1,9 +1,9 @@
 Set up instructions:
 
 ```bash
-yarn install
+npm install
 
-yarn start
+npm start
 ```
 
 It's live at:
